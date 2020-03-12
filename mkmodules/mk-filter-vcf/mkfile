@@ -1,0 +1,7 @@
+MKSHELL=/bin/bash
+
+%.filtered.vcf:Q: %.vcf
+	echo "[DEBUG] filtering vcf from $prereq"
+	# only biallelic snps with more than a singleton
+	# note, this still allows private homozygous variants
+	bcftools view -m2 -M2 -v snps --min-ac 2 $prereq > $target
