@@ -1,19 +1,27 @@
 MKSHELL=/bin/bash
 
-%.formatted.vcf:Q: %.newheader.tmp %.newbody.tmp
-	# echo "[DEBUG] concatenate $prereq"
-	# cat $prereq > $target
+%.formatted.vcf.gz:Q: %.simplified.tmp %.samples.tmp
+	echo "[DEBUG] remove samples using $prereq"
+	# this block allso refills the AC AN fields in INFO
+	bcftools view \
+		--samples-file $stem.samples.tmp \
+		$stem.simplified.tmp \
+	| bgzip > $target \
+	&& tabix -p vcf $target
 
-%.newbody.tmp:Q: %.vcf.gz $SAMPLE_LIST
+%.samples.tmp:Q: $SAMPLE_LIST
+	echo "[DEBUG] generating intermediate samples list from $prereq"
+	cut -f1 $prereq | grep -v "#" > $target
+
+%.simplified.tmp:Q: %.newheader.tmp %.newbody.tmp
+	echo "[DEBUG] concatenate $prereq"
+	cat $prereq > $target
+
+%.newbody.tmp:Q: %.vcf.gz
 	echo "[DEBUG] remove columns from $prereq"
-	## build samples to keep
-	samples_to_keep=$(cut -f1 $SAMPLE_LIST | grep -v "#" \
-										| tr "\n" "," | sed "s#,\$##" )
 	## remove samples via a sample file
-	echo "[DEBUG] keep samples: $samples_to_keep"
-	bcftools annotate --remove "INFO,FILTER" $stem.vcf.gz \
-	| bcftools view -H --samples $samples_to_keep \
-	| tr '|' '/' > $target
+	bcftools annotate --remove "INFO,FILTER" $prereq \
+	| grep -v "#" | tr '|' '/' > $target
 
 %.newheader.tmp:Q: %.vcf.gz
 	echo "[DEBUG] removing unused contigs from $prereq"
