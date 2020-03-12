@@ -1,0 +1,33 @@
+MKSHELL=/bin/bash
+
+%.formatted.vcf:Q: %.newheader.tmp %.newbody.tmp
+	# echo "[DEBUG] concatenate $prereq"
+	# cat $prereq > $target
+
+%.newbody.tmp:Q: %.vcf.gz $SAMPLE_LIST
+	echo "[DEBUG] remove columns from $prereq"
+	## build samples to keep
+	samples_to_keep=$(cut -f1 $SAMPLE_LIST | grep -v "#" \
+										| tr "\n" "," | sed "s#,\$##" )
+	## remove samples via a sample file
+	echo "[DEBUG] keep samples: $samples_to_keep"
+	bcftools annotate --remove "INFO,FILTER" $stem.vcf.gz \
+	| bcftools view -H --samples $samples_to_keep \
+	| tr '|' '/' > $target
+
+%.newheader.tmp:Q: %.vcf.gz
+	echo "[DEBUG] removing unused contigs from $prereq"
+	# extract piece of header BEFORE the contig block
+	# start newheadir with this block
+	bcftools view -h $prereq \
+	| grep -v '##contig=<ID=*' | head -n-1 > $target
+	## search for each contig really present in the vcf
+	for search in $(tabix --list-chroms $prereq)
+	do
+		## extract contig list from header \
+		#  | then find current present chromosome in header list
+		bcftools view -h $prereq | grep '##contig=<ID=*' \
+		| grep "##contig=<ID=$search," >> $target
+	done
+	# append last line of original header
+	bcftools view -h $prereq | tail -n1 >> $target
