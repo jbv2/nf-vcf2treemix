@@ -4,4 +4,13 @@ MKSHELL=/bin/bash
 	echo "[DEBUG] filtering vcf from $prereq"
 	# only biallelic snps with more than a singleton
 	# note, this still allows private homozygous variants
-	bcftools view -m2 -M2 -v snps --min-ac 2 $prereq > $target
+	## second pipe replaces missing ID sites with customIDs
+	bcftools view \
+		-m2 -M2 --types snps \
+		--min-ac 2 $prereq \
+	| awk ' BEGIN {FS=OFS="\t"}
+		{
+			if($3==".")
+				$3=$1"_"$2"_"$4"_"$5
+			print $0
+		}' - > $target
