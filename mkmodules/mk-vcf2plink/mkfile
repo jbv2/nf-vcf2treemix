@@ -1,0 +1,23 @@
+## Define shell command line which will be used to run scripts.
+MKSHELL=/bin/bash
+
+%.LD.maf_filtered.bed:Q: %.converted.bed
+	echo "[DEBUG] Filtering maf 5% with plink"
+	$PLINK --bfile $stem.converted \
+	--threads $THREADS_PLINK \
+	--maf $MAF \
+	--make-bed \
+	--out $stem.LD.maf_filtered
+
+%.converted.bed:Q: %.LD.vcf
+	echo "[DEBUG] Converting vcf to plink file"
+	$PLINK --vcf $prereq \
+	--threads $THREADS_PLINK \
+	--keep-allele-order \
+	--double-id \
+	--vcf-filter \
+	--vcf-half-call m \
+	--vcf-require-gt \
+	--geno \
+	--make-bed \
+	--out $stem.converted

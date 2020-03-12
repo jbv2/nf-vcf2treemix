@@ -1,0 +1,6 @@
+## Define shell command line which will be used to run scripts.
+MKSHELL=/bin/bash
+
+%.clust:Q: %.fam $POPULATIONS
+	echo "[DEBUG] Exporting $POPULATIONS"
+	Rscript --vanilla tagger.R $prereq $target

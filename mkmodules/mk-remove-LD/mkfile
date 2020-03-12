@@ -1,0 +1,32 @@
+## Define shell command line which will be used to run scripts.
+MKSHELL=/bin/bash
+
+%.LD.vcf:Q: %.simplified_2.vcf
+	echo "[DEBUG] Removing variants in LD"
+	bcftools +prune \
+		$prereq \
+		--max-LD $LD \
+    --window $WINDOW \
+		--nsites-per-win $N_sites \
+		--annotate-info STR \
+		--set-filter MAX_R2 \
+                > $target
+
+%.simplified_2.vcf:Q: %.simplified.vcf
+	echo "[DEBUG] Filling missing rsID"
+	awk ' BEGIN {FS=OFS="\t"}
+	{
+		if($3==".")
+			$3=$1"_"$2"_"$4"_"$5
+		print $0
+	}' $prereq > $target
+
+
+%.simplified.vcf:Q: %.vcf.gz
+	echo "[DEBUG] Simplifying vcf to keep only INFO/AF and GT"
+	bcftools view --types snps $prereq \
+	| bcftools norm --multiallelics -snps \
+	| bcftools annotate \
+		--remove INFO \
+	| bcftools +fill-tags \
+	> $target
