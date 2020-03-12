@@ -325,7 +325,7 @@ process _001_run_treemix {
 	export K_VALUE="${params.k_value}"
 	export ROOT_POP="${params.root_pop}"
 	export BOOTSTRAP_VALUE="${params.bootstrap_value}"
-	export PLINK="${params.plink1}"
+	export PLINK1="${params.plink1}"
 	export POP_ORDER="${params.pop_order}"
 	bash runmk.sh
 	"""
