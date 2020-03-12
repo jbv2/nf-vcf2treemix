@@ -3,15 +3,26 @@ MKSHELL=/bin/bash
 
 %.TreeMix:Q: %.treemix.frq.gz
 	echo "[DEBUG] Running treemix"
-	treemix -i $prereq -o $target -k $K_VALUE -global -root $ROOT_POP -bootstrap $BOOTSTRAP_VALUE -noss
+	treemix -i $prereq \
+		-o $target \
+		-k $K_VALUE \
+		-global \
+		-root $ROOT_POP \
+		-bootstrap $BOOTSTRAP_VALUE \
+		-noss
 
 %.treemix.frq.gz:Q: %.frq.strat.gz
 	echo "[DEBUG] Converting plink files to treemix input"
-	$PLINK2TREEMIX $prereq $target
+	python plink2treemix.py $prereq $target
 
 %.frq.strat.gz:Q: %.frq.strat
+	echo "[DEBUG] compress $prereq"
 	gzip $prereq
 
 %.frq.strat:Q: %.bed
 	echo "[DEBUG] Mixing bfile with clusters"
-	plink --bfile $stem --freq --missing --within $stem.clust --out $stem
+	$PLINK1 --bfile $stem \
+		--freq \
+		--missing \
+		--within $stem.clust \
+		--out $stem

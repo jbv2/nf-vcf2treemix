@@ -3,11 +3,10 @@
 
 ###
 ## environment variable setting
-export PLINK2TREEMIX="./plink2treemix.py"
-export K_VALUE="500"
+export K_VALUE="1000"
 export ROOT_POP="CHB"
 export BOOTSTRAP_VALUE="100"
-export PLINK=plink2
+export PLINK1="plink"
 ###
 
 echo "[>..] test running this module with data in test/data"

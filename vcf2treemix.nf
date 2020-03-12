@@ -269,7 +269,7 @@ process _pre2_vcf2plink {
 	file "*.maf_filtered.*" into results_pre2_vcf2plink
 
 	"""
-	export PLINK="${params.plink}"
+	export PLINK="${params.plink2}"
 	export MAF="${params.maf}"
 	export THREADS_PLINK="${params.threads_plink}"
 	bash runmk.sh
@@ -322,11 +322,10 @@ process _001_run_treemix {
 	file "*.TreeMix.*" into results_001_run_treemix
 
 	"""
-	export PLINK2TREEMIX="${params.plink2treemix}"
 	export K_VALUE="${params.k_value}"
 	export ROOT_POP="${params.root_pop}"
 	export BOOTSTRAP_VALUE="${params.bootstrap_value}"
-	export PLINK="${params.plink}"
+	export PLINK="${params.plink1}"
 	export POP_ORDER="${params.pop_order}"
 	bash runmk.sh
 	"""
