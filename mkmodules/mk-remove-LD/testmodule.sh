@@ -17,5 +17,5 @@ echo "[>>.] results will be created in test/results"*.vcf
 ## Move results from test/data to test/results
 ## Result is a vcf simplified and when there is no rsID, an ID has been assigned.
 bash runmk.sh \
-&& mv test/data/*.vcf test/results/ \
+&& mv test/data/*.LD.vcf test/results/ \
 && echo "[>>>] Module Test Successful"

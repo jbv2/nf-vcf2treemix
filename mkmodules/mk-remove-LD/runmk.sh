@@ -4,6 +4,7 @@
 #find: -L option to include symlinks
 find -L . \
   -type f \
-  -name "*.vcf.gz" \
-| sed 's#.vcf.gz#.LD.vcf#' \
+  -name "*.vcf" \
+ ! -name "*.LD.vcf" \
+| sed 's#.vcf#.LD.vcf#' \
 | xargs mk
