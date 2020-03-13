@@ -8,6 +8,7 @@ MKSHELL=/bin/bash
 	bcftools view \
 		-m2 -M2 --types snps \
 		--min-ac 2 $prereq \
+	| bcftools +fill-tags -- --tags AF,MAF \
 	| awk ' BEGIN {FS=OFS="\t"}
 		{
 			if($3==".")
