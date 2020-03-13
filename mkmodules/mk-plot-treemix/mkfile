@@ -3,4 +3,4 @@ MKSHELL=/bin/bash
 ## make the plot
 %.treeplot.svg:Q: $POP_ORDER
 	echo "[DEBUG] Plotting $stem "
-	Rscript --vanila tree_plotter.R $stem $POP_ORDER $target 
+	Rscript --vanilla tree_plotter.R $stem $POP_ORDER $target 

@@ -1,7 +1,7 @@
 # Define shell command line which will be used to run scripts.
 MKSHELL=/bin/bash
 
-%.TreeMix:Q: %.treemix.frq.gz
+%.TreeMix:VQ: %.treemix.frq.gz
 	echo "[DEBUG] Running treemix"
 	treemix -i $prereq \
 		-o $target \
@@ -9,6 +9,7 @@ MKSHELL=/bin/bash
 		-global \
 		-root $ROOT_POP \
 		-bootstrap $BOOTSTRAP_VALUE \
+		-m $MIGRATION_EVENT \
 		-noss
 
 %.treemix.frq.gz:Q: %.frq.strat.gz
