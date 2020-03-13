@@ -33,9 +33,8 @@ _pre3_filtervcf
 _pre4_remove_LD
 _pre5_rejoinvcf
 
-
-_pre2_vcf2plink
-_pre3_make_clust
+_pre6_vcf2plink
+_pre7_make_clust
 
 Core-processing:
 _001_run_treemix
@@ -332,139 +331,136 @@ process _pre4_remove_LD {
 /* Gather every previous result from pre4 before rejoining */
 results_pre4_remove_LD
 .toList()
-set{ gathered_chunks }
+.set{ all_chunks }
 
-/* _pre5_rejoinvcf */
 /* 	Process _pre5_rejoinvcf */
 /* Read mkfile module files */
-// Channel
-// 	.fromPath("${workflow.projectDir}/mkmodules/mk-rejoin-vcf/*")
-// 	.toList()
-// 	.set{ mkfiles_pre5 }
-//
-// process _pre5_rejoinvcf {
-//
-// 	publishDir "${intermediates_dir}/_pre5_rejoinvcf/",mode:"symlink"
-//
-// 	input:
-// 	file chunks from gathered_chunks
-// 	file mk_files from mkfiles_pre5
-//
-// 	output:
-// 	file "*.vcf" into results_pre5_rejoinvcf
-//
-// 	"""
-// 	bash runmk.sh
-// 	"""
-//
-// }
+Channel
+	.fromPath("${workflow.projectDir}/mkmodules/mk-rejoin-vcf/*")
+	.toList()
+	.set{ mkfiles_pre5 }
 
+process _pre5_rejoinvcf {
 
-//
-// /* 	Process _pre2_vcf2plink */
-// /* Read mkfile module files */
-// Channel
-// 	.fromPath("${workflow.projectDir}/mkmodules/mk-vcf2plink/*")
-// 	.toList()
-// 	.set{ mkfiles_pre2 }
-//
-// process _pre2_vcf2plink {
-//
-// 	publishDir "${intermediates_dir}/_pre2_vcf2plink/",mode:"symlink"
-//
-// 	input:
-// 	file vcf from results_pre1_remove_LD
-// 	file mk_files from mkfiles_pre2
-//
-// 	output:
-// 	file "*.maf_filtered.*" into results_pre2_vcf2plink
-//
-// 	"""
-// 	export PLINK="${params.plink2}"
-// 	export MAF="${params.maf}"
-// 	export THREADS_PLINK="${params.threads_plink}"
-// 	bash runmk.sh
-// 	"""
-//
-// }
-//
-// /* 	Process _pre3_make_clust */
-// /* Read mkfile module files */
-// Channel
-// 	.fromPath("${workflow.projectDir}/mkmodules/mk-make-clust/*")
-// 	.toList()
-// 	.set{ mkfiles_pre3 }
-//
-// process _pre3_make_clust {
-//
-// 	publishDir "${intermediates_dir}/_pre3_make_clust/",mode:"symlink"
-//
-// 	input:
-// 	file bfile from results_pre2_vcf2plink
-// 	file mk_files from mkfiles_pre3
-//
-// 	output:
-// 	file "*.clust" into results_pre3_make_clust
-//
-// 	"""
-// 	export POPULATIONS="${params.populations}"
-// 	bash runmk.sh
-// 	"""
-//
-// }
-//
-// /* 	Process _001_run_treemix */
-// /* Read mkfile module files */
-// Channel
-// 	.fromPath("${workflow.projectDir}/mkmodules/mk-run-treemix/*")
-// 	.toList()
-// 	.set{ mkfiles_001 }
-//
-// process _001_run_treemix {
-//
-// 	publishDir "${params.output_dir}/${pipeline_name}-results/_001_run_treemix/",mode:"copy"
-//
-// 	input:
-//   file bfile from results_pre2_vcf2plink
-//   file clust from results_pre3_make_clust
-//   file mk_files from mkfiles_001
-//
-// 	output:
-// 	file "*.TreeMix.*" into results_001_run_treemix
-//
-// 	"""
-// 	export K_VALUE="${params.k_value}"
-// 	export ROOT_POP="${params.root_pop}"
-// 	export BOOTSTRAP_VALUE="${params.bootstrap_value}"
-// 	export PLINK1="${params.plink1}"
-// 	export POP_ORDER="${params.pop_order}"
-// 	export MIGRATION_EVENT="${params.migration_event}"
-// 	bash runmk.sh
-// 	"""
-//
-// }
-//
-// /* 	Process _post1_plot_treemix */
-// /* Read mkfile module files */
-// Channel
-// 	.fromPath("${workflow.projectDir}/mkmodules/mk-plot-treemix/*")
-// 	.toList()
-// 	.set{ mkfiles_post1 }
-//
-// process _post1_plot_treemix {
-//
-// 	publishDir "${params.output_dir}/${pipeline_name}-results/_post1_plot_treemix/",mode:"copy"
-//
-// 	input:
-//   file treemix from results_001_run_treemix
-//   file mk_files from mkfiles_post1
-//
-// 	output:
-// 	file "*"
-//
-// 	"""
-// 	export POP_ORDER="${params.pop_order}"
-// 	bash runmk.sh
-// 	"""
-//
-// }
+	publishDir "${intermediates_dir}/_pre5_rejoinvcf/",mode:"symlink"
+
+	input:
+	file chunks from all_chunks
+	file mk_files from mkfiles_pre5
+
+	output:
+	file "*.vcf" into results_pre5_rejoinvcf
+
+	"""
+	bash runmk.sh
+	"""
+
+}
+
+/* 	Process _pre6_vcf2plink */
+/* Read mkfile module files */
+Channel
+	.fromPath("${workflow.projectDir}/mkmodules/mk-vcf2plink/*")
+	.toList()
+	.set{ mkfiles_pre6 }
+
+process _pre6_vcf2plink {
+
+	publishDir "${intermediates_dir}/_pre6_vcf2plink/",mode:"symlink"
+
+	input:
+	file vcf from results_pre5_rejoinvcf
+	file mk_files from mkfiles_pre6
+
+	output:
+	file "*.maf_filtered.*" into results_pre6_vcf2plink
+
+	"""
+	export PLINK="${params.plink2}"
+	export MAF="${params.maf}"
+	export THREADS_PLINK="${params.threads_plink}"
+	bash runmk.sh
+	"""
+
+}
+
+/* 	Process _pre7_make_clust */
+/* Read mkfile module files */
+Channel
+	.fromPath("${workflow.projectDir}/mkmodules/mk-make-clust/*")
+	.toList()
+	.set{ mkfiles_pre7 }
+
+process _pre7_make_clust {
+
+	publishDir "${intermediates_dir}/_pre7_make_clust/",mode:"symlink"
+
+	input:
+	file bfile from results_pre6_vcf2plink
+	file mk_files from mkfiles_pre7
+
+	output:
+	file "*.clust" into results_pre7_make_clust
+
+	"""
+	export SAMPLE_LIST="${params.sample_list}"
+	bash runmk.sh
+	"""
+
+}
+
+/* 	Process _001_run_treemix */
+/* Read mkfile module files */
+Channel
+	.fromPath("${workflow.projectDir}/mkmodules/mk-run-treemix/*")
+	.toList()
+	.set{ mkfiles_001 }
+
+process _001_run_treemix {
+
+	publishDir "${params.output_dir}/${pipeline_name}-results/_001_run_treemix/",mode:"copy"
+
+	input:
+  file bfile from results_pre6_vcf2plink
+  file clust from results_pre7_make_clust
+  file mk_files from mkfiles_001
+
+	output:
+	file "*.TreeMix.*" into results_001_run_treemix
+
+	"""
+	export K_VALUE="${params.k_value}"
+	export ROOT_POP="${params.root_pop}"
+	export BOOTSTRAP_VALUE="${params.bootstrap_value}"
+	export PLINK1="${params.plink1}"
+	export POP_ORDER="${params.pop_order}"
+	export MIGRATION_EVENT="${params.migration_event}"
+	bash runmk.sh
+	"""
+
+}
+
+/* 	Process _post1_plot_treemix */
+/* Read mkfile module files */
+Channel
+	.fromPath("${workflow.projectDir}/mkmodules/mk-plot-treemix/*")
+	.toList()
+	.set{ mkfiles_post1 }
+
+process _post1_plot_treemix {
+
+	publishDir "${params.output_dir}/${pipeline_name}-results/_post1_plot_treemix/",mode:"copy"
+
+	input:
+  file treemix from results_001_run_treemix
+  file mk_files from mkfiles_post1
+
+	output:
+	file "*"
+
+	"""
+	export POP_ORDER="${params.pop_order}"
+	bash runmk.sh
+	"""
+
+}

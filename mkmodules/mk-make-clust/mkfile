@@ -1,6 +1,6 @@
 ## Define shell command line which will be used to run scripts.
 MKSHELL=/bin/bash
 
-%.clust:Q: %.fam $POPULATIONS
-	echo "[DEBUG] Tagging $POPULATIONS"
+%.clust:Q: %.fam $SAMPLE_LIST
+	echo "[DEBUG] Tagging $SAMPLE_LIST"
 	Rscript --vanilla tagger.R $prereq $target

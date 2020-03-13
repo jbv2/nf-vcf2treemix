@@ -3,7 +3,7 @@
 
 ###
 ## environment variable setting
-export POPULATIONS="test/reference/sample_list.tsv"
+export SAMPLE_LIST="test/reference/sample_list.tsv"
 ###
 
 echo "[>..] test running this module with data in test/data"
