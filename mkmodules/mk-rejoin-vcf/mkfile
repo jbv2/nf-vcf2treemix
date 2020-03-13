@@ -1,0 +1,5 @@
+MKSHELL=/bin/bash
+
+%.filtered.LD.vcf:Q:
+	echo "[DEBUG] concatenating vcf file $target"
+	bcftools concat $(ls $stem.chunk*.vcf | sort -V ) > $target

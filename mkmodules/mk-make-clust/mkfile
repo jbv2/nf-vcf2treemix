@@ -2,5 +2,5 @@
 MKSHELL=/bin/bash
 
 %.clust:Q: %.fam $POPULATIONS
-	echo "[DEBUG] Exporting $POPULATIONS"
+	echo "[DEBUG] Tagging $POPULATIONS"
 	Rscript --vanilla tagger.R $prereq $target
