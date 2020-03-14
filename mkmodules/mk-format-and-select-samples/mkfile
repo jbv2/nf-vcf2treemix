@@ -1,13 +1,13 @@
 MKSHELL=/bin/bash
 
-%.formatted.vcf.gz:Q: %.simplified.tmp %.samples.tmp
+%.formatted.vcf:Q: %.simplified.tmp %.samples.tmp
 	echo "[DEBUG] remove samples using $prereq"
 	# this block allso refills the AC AN fields in INFO
 	bcftools view \
 		--samples-file $stem.samples.tmp \
 		$stem.simplified.tmp \
-	| bgzip > $target \
-	&& tabix -p vcf $target
+	> $target \
+	&& rm $stem.*.tmp
 
 %.samples.tmp:Q: $SAMPLE_LIST
 	echo "[DEBUG] generating intermediate samples list from $prereq"

@@ -5,7 +5,8 @@ MKSHELL=/bin/bash
 	for chromosome in $(tabix --list-chroms $prereq)
 	do
 		chunk_number=$((chunk_number + 1))
-		subtarget="$stem.chunk$chunk_number.vcf"
+		subtarget="$stem.chunk$chunk_number.vcf.gz"
 		echo "[>..] Extracting $chromosome into $subtarget"
-		bcftools view $prereq $chromosome > $subtarget
+		bcftools view $prereq $chromosome | bgzip > $subtarget \
+		&& tabix -p vcf $subtarget
 	done

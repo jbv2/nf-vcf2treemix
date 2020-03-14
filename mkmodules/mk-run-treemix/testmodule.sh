@@ -7,7 +7,7 @@ export K_VALUE="1000"
 export ROOT_POP="YRI"
 export BOOTSTRAP_VALUE="100"
 export PLINK1="plink"
-export MIGRATION_EVENT="1"
+export MIGRATION_EVENT="0"
 ###
 
 echo "[>..] test running this module with data in test/data"

@@ -5,6 +5,6 @@
 find -L . \
   -type f \
   -name "*.vcf.gz" \
-  ! -name ".formatted.vcf.gz"  \
-| sed 's#.vcf.gz#.formatted.vcf.gz#' \
+  ! -name ".formatted.vcf"  \
+| sed 's#.vcf.gz#.formatted.vcf#' \
 | xargs mk

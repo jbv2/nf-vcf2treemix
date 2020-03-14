@@ -15,5 +15,5 @@ echo "[>>.] results will be created in test/results"
 ## Move results from test/data to test/results
 ## results file is *.clust
 bash runmk.sh \
-&& mv test/data/*.clust test/data/*.tmp test/results/ \
+&& mv test/data/*.clust test/results/ \
 && echo "[>>>] Module Test Successful"

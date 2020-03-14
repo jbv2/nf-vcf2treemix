@@ -5,5 +5,6 @@
 find -L . \
 	-type f \
 	-name '*.vcf.gz' \
+	! -name '*.chunk*' \
 | sed 's#.vcf.gz#.SPLITVCF#' \
 | xargs mk

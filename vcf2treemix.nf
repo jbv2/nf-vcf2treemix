@@ -27,8 +27,8 @@ Authors:
 Pipeline Processes In Brief:
 .
 Pre-processing:
-_pre1_formatvcf
-_pre2_split_chromosomes
+_pre1_formatvcf -> _pre2_split_chromosomes
+_pre2_split_chromosomes -> _pre1_formatvcf
 _pre3_filtervcf
 _pre4_remove_LD
 _pre5_rejoinvcf

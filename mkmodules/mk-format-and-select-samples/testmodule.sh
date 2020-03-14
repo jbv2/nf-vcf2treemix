@@ -14,5 +14,5 @@ echo "[>>.] results will be created in test/results"*.vcf
 ## Execute runmk.sh, it will find the basic example in test/data
 ## Move results from test/data to test/results
 bash runmk.sh \
-&& mv test/data/*.formatted.vcf.gz* test/data/*.tmp test/results/ \
+&& mv test/data/*.formatted.vcf test/results/ \
 && echo "[>>>] Module Test Successful"
