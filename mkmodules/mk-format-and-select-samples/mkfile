@@ -25,6 +25,8 @@ MKSHELL=/bin/bash
 
 %.newheader.tmp:Q: %.vcf.gz
 	echo "[DEBUG] removing unused contigs from $prereq"
+	## index the file to be able to extract chroms
+	tabix -p vcf $prereq
 	# extract piece of header BEFORE the contig block
 	# start newheadir with this block
 	bcftools view -h $prereq \

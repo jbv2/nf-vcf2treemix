@@ -27,8 +27,8 @@ Authors:
 Pipeline Processes In Brief:
 .
 Pre-processing:
-_pre1_formatvcf -> _pre2_split_chromosomes
-_pre2_split_chromosomes -> _pre1_formatvcf
+_pre1_split_chromosomes
+_pre2_formatvcf
 _pre3_filtervcf
 _pre4_remove_LD
 _pre5_rejoinvcf
@@ -227,51 +227,51 @@ Channel
 	.toList()
   .set{ vcf_inputs }
 
-/* _pre1_formatvcf */
+/* _pre1_split_chromosomes */
 /* Read mkfile module files */
 Channel
-	.fromPath("${workflow.projectDir}/mkmodules/mk-format-and-select-samples/*")
+	.fromPath("${workflow.projectDir}/mkmodules/mk-split-chromosomes/*")
 	.toList()
 	.set{ mkfiles_pre1 }
 
-process _pre1_formatvcf {
+process _pre1_split_chromosomes {
 
-	publishDir "${intermediates_dir}/_pre1_formatvcf/",mode:"symlink"
+	publishDir "${intermediates_dir}/_pre1_split_chromosomes/",mode:"symlink"
 
 	input:
 	file vcf from vcf_inputs
 	file mk_files from mkfiles_pre1
 
 	output:
-	file "*.vcf.gz*" into results_pre1_formatvcf
-
+	file "*.chunk*" into results_pre1_split_chromosomes mode flatten
 
 	"""
-	export SAMPLE_LIST="${params.sample_list}"
 	bash runmk.sh
 	"""
 
 }
 
-/* _pre2_split_chromosomes */
+/* _pre2_formatvcf */
 /* Read mkfile module files */
 Channel
-	.fromPath("${workflow.projectDir}/mkmodules/mk-split-chromosomes/*")
+	.fromPath("${workflow.projectDir}/mkmodules/mk-format-and-select-samples/*")
 	.toList()
 	.set{ mkfiles_pre2 }
 
-process _pre2_split_chromosomes {
+process _pre2_formatvcf {
 
-	publishDir "${intermediates_dir}/_pre2_split_chromosomes/",mode:"symlink"
+	publishDir "${intermediates_dir}/_pre2_formatvcf/",mode:"symlink"
 
 	input:
-	file vcf from results_pre1_formatvcf
+	file vcf from results_pre1_split_chromosomes
 	file mk_files from mkfiles_pre2
 
 	output:
-	file "*.chunk*" into results_pre2_split_chromosomes mode flatten
+	file "*.vcf" into results_pre2_formatvcf
+
 
 	"""
+	export SAMPLE_LIST="${params.sample_list}"
 	bash runmk.sh
 	"""
 
@@ -289,7 +289,7 @@ process _pre3_filtervcf {
 	publishDir "${intermediates_dir}/_pre3_filtervcf/",mode:"symlink"
 
 	input:
-	file vcf from results_pre2_split_chromosomes
+	file vcf from results_pre2_formatvcf
 	file mk_files from mkfiles_pre3
 
 	output:
