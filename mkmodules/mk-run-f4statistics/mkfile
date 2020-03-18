@@ -1,0 +1,5 @@
+# Define shell command line which will be used to run scripts.
+MKSHELL=/bin/bash
+
+%.f4statistics:Q: %.treemix.frq.gz
+	fourpop -i $prereq -k $K_VALUE > $target

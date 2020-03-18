@@ -38,6 +38,8 @@ _pre7_make_clust
 
 Core-processing:
 _001_run_treemix
+_002_run_f3statistics
+_003_run_f4statistics
 
 Pos-processing
 _post1_plot_treemix
@@ -427,6 +429,7 @@ process _001_run_treemix {
 
 	output:
 	file "*.TreeMix.*" into results_001_run_treemix
+	file "*.treemix.*" into results_01_run_treemix
 
 	"""
 	export K_VALUE="${params.k_value}"
@@ -435,6 +438,56 @@ process _001_run_treemix {
 	export PLINK1="${params.plink1}"
 	export POP_ORDER="${params.pop_order}"
 	export MIGRATION_EVENT="${params.migration_event}"
+	bash runmk.sh
+	"""
+
+}
+
+/* 	Process _002_run_f3statistics */
+/* Read mkfile module files */
+Channel
+	.fromPath("${workflow.projectDir}/mkmodules/mk-run-f3statistics/*")
+	.toList()
+	.set{ mkfiles_002 }
+
+process _002_run_f3statistics {
+
+	publishDir "${params.output_dir}/${pipeline_name}-results/_002_run_f3statistics/",mode:"copy"
+
+	input:
+  file input_treemix from results_01_run_treemix
+  file mk_files from mkfiles_002
+
+	output:
+	file "*.f3statistics" into results_002_run_f3statistics
+
+	"""
+	export K_VALUE="${params.k_value}"
+	bash runmk.sh
+	"""
+
+}
+
+/* 	Process _003_run_f4statistics */
+/* Read mkfile module files */
+Channel
+	.fromPath("${workflow.projectDir}/mkmodules/mk-run-f4statistics/*")
+	.toList()
+	.set{ mkfiles_003 }
+
+process _003_run_f4statistics {
+
+	publishDir "${params.output_dir}/${pipeline_name}-results/_003_run_f4statistics/",mode:"copy"
+
+	input:
+  file input_treemix from results_01_run_treemix
+  file mk_files from mkfiles_003
+
+	output:
+	file "*.f4statistics" into results_003_run_f4statistics
+
+	"""
+	export K_VALUE="${params.k_value}"
 	bash runmk.sh
 	"""
 
