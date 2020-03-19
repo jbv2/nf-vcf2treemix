@@ -90,8 +90,7 @@ nextflow run vcf2treemix.nf --help
 ---
 
 ### Pipeline Inputs
-* A compressed vcf file with extension '.vcf.gz'; the VCF must be previously annotated with https://github.com/Iaguilaror/nf-VEPextended
-
+* A compressed vcf file with extension '.vcf.gz'.
 Example line(s):
 ```
 ##fileformat=VCFv4.2
@@ -132,8 +131,7 @@ Pickrell, J. K., & Pritchard, J. K. (2012). Supplementary Material for: Inferenc
 ---
 
 ### Contact
-If you have questions, requests, or bugs to report, please email
-<judith.vballesteros@gmail
+If you have questions, requests, or bugs to report, please email <judith.vballesteros@gmail.com> or <iaguilaror@gmail.com>
 
 #### Dev Team
 Israel Aguilar-Ordonez <iaguilaror@gmail.com>   
