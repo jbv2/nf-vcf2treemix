@@ -1,0 +1,17 @@
+MKSHELL=/bin/bash
+
+## make the plot
+%.f3raw_plot.svg:Q: %.f3.tsv
+	echo "[DEBUG] Plotting $stem "
+	Rscript --vanilla plotter.R $prereq $target
+
+
+%.f3.tsv:Q: %.f3statistics
+	echo "[DEBUG] Making tsv of f3statistics results"
+	echo "Tested_Tree f3_statistic Standard_error Z_score" \
+		| tr ' ' '\t' > $target
+	cat $prereq \
+		| grep -v "npop" \
+		| grep -v "^Estimating" \
+		| grep -v "^total" \
+		| tr ' ' '\t' >> $target

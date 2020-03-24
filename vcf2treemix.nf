@@ -43,6 +43,8 @@ _003_run_f4statistics
 
 Pos-processing
 _post1_plot_treemix
+_post2_plot_f3statistics
+_post3_plot_f4statistics
 
 ================================================================*/
 
@@ -513,6 +515,54 @@ process _post1_plot_treemix {
 
 	"""
 	export POP_ORDER="${params.pop_order}"
+	bash runmk.sh
+	"""
+
+}
+
+/* 	Process _post2_plot_f3statistics */
+/* Read mkfile module files */
+Channel
+	.fromPath("${workflow.projectDir}/mkmodules/mk-plot-f3-statistics/*")
+	.toList()
+	.set{ mkfiles_post2 }
+
+process _post2_plot_f3statistics {
+
+	publishDir "${params.output_dir}/${pipeline_name}-results/_post2_plot_f3statistics/",mode:"copy"
+
+	input:
+  file f3 from results_002_run_f3statistics
+  file mk_files from mkfiles_post2
+
+	output:
+	file "*"
+
+	"""
+	bash runmk.sh
+	"""
+
+}
+
+/* 	Process _post3_plot_f4statistics */
+/* Read mkfile module files */
+Channel
+	.fromPath("${workflow.projectDir}/mkmodules/mk-plot-f4-statistics/*")
+	.toList()
+	.set{ mkfiles_post3 }
+
+process _post3_plot_f4statistics {
+
+	publishDir "${params.output_dir}/${pipeline_name}-results/_post3_plot_f4statistics/",mode:"copy"
+
+	input:
+  file f4 from results_003_run_f4statistics
+  file mk_files from mkfiles_post3
+
+	output:
+	file "*"
+
+	"""
 	bash runmk.sh
 	"""
 
