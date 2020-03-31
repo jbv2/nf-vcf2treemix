@@ -136,4 +136,3 @@ If you have questions, requests, or bugs to report, please email <judith.vballes
 #### Dev Team
 Israel Aguilar-Ordonez <iaguilaror@gmail.com>   
 Judith Ballesteros-Villascán <judith.vballesteros@gmail>
-

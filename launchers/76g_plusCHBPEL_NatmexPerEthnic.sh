@@ -1,6 +1,12 @@
+input_file="real-data/76g_plus_PEL_per_group/76g_1000GP-population_set.vcf.gz"
+output_directory=$(dirname $input_file)/results/
+
 nextflow run vcf2treemix.nf \
-	--vcffile real-data/76g_plus_PEL_per_group/76g_1000GP-population_set.vcf.gz \
-	--output_dir real-data/76g_plus_PEL_per_group/results \
+	--vcffile $input_file \
+	--sample_list real-data/76g_plus_PEL_per_group/reference/sample_list.tsv \
+	--pop_order real-data/76g_plus_PEL_per_group/reference/pop_order \
+	--root_pop "CHB" \
+	--output_dir $output_directory \
 	-resume \
-	-with-report real-data/76g_plus_PEL_per_group/results/`date +%Y%m%d_%H%M%S`_report.html \
-	-with-dag real-data/76g_plus_PEL_per_group/results/`date +%Y%m%d_%H%M%S`.DAG.html
+	-with-report $output_directory/`date +%Y%m%d_%H%M%S`_report.html \
+	-with-dag $output_directory/`date +%Y%m%d_%H%M%S`.DAG.html
