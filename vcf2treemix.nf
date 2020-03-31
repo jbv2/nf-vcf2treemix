@@ -256,6 +256,12 @@ process _pre1_split_chromosomes {
 }
 
 /* _pre2_formatvcf */
+/* Read sample list */
+Channel
+	.fromPath("${params.sample_list}*")
+	.toList()
+	.set{ sample_list }
+
 /* Read mkfile module files */
 Channel
 	.fromPath("${workflow.projectDir}/mkmodules/mk-format-and-select-samples/*")
@@ -268,6 +274,7 @@ process _pre2_formatvcf {
 
 	input:
 	file vcf from results_pre1_split_chromosomes
+	file reference from sample_list
 	file mk_files from mkfiles_pre2
 
 	output:
@@ -275,7 +282,7 @@ process _pre2_formatvcf {
 
 
 	"""
-	export SAMPLE_LIST="${params.sample_list}"
+	export SAMPLE_LIST="$reference"
 	bash runmk.sh
 	"""
 
@@ -401,13 +408,14 @@ process _pre7_make_clust {
 
 	input:
 	file bfile from results_pre6_vcf2plink
+	file reference from sample_list
 	file mk_files from mkfiles_pre7
 
 	output:
 	file "*.clust" into results_pre7_make_clust
 
 	"""
-	export SAMPLE_LIST="${params.sample_list}"
+	export SAMPLE_LIST="$reference"
 	bash runmk.sh
 	"""
 
@@ -438,64 +446,70 @@ process _001_run_treemix {
 	export ROOT_POP="${params.root_pop}"
 	export BOOTSTRAP_VALUE="${params.bootstrap_value}"
 	export PLINK1="${params.plink1}"
-	export POP_ORDER="${params.pop_order}"
 	export MIGRATION_EVENT="${params.migration_event}"
 	bash runmk.sh
 	"""
 
 }
-
-/* 	Process _002_run_f3statistics */
-/* Read mkfile module files */
-Channel
-	.fromPath("${workflow.projectDir}/mkmodules/mk-run-f3statistics/*")
-	.toList()
-	.set{ mkfiles_002 }
-
-process _002_run_f3statistics {
-
-	publishDir "${params.output_dir}/${pipeline_name}-results/_002_run_f3statistics/",mode:"copy"
-
-	input:
-  file input_treemix from results_01_run_treemix
-  file mk_files from mkfiles_002
-
-	output:
-	file "*.f3statistics" into results_002_run_f3statistics
-
-	"""
-	export K_VALUE="${params.k_value}"
-	bash runmk.sh
-	"""
-
-}
-
-/* 	Process _003_run_f4statistics */
-/* Read mkfile module files */
-Channel
-	.fromPath("${workflow.projectDir}/mkmodules/mk-run-f4statistics/*")
-	.toList()
-	.set{ mkfiles_003 }
-
-process _003_run_f4statistics {
-
-	publishDir "${params.output_dir}/${pipeline_name}-results/_003_run_f4statistics/",mode:"copy"
-
-	input:
-  file input_treemix from results_01_run_treemix
-  file mk_files from mkfiles_003
-
-	output:
-	file "*.f4statistics" into results_003_run_f4statistics
-
-	"""
-	export K_VALUE="${params.k_value}"
-	bash runmk.sh
-	"""
-
-}
-
+//
+// /* 	Process _002_run_f3statistics */
+// /* Read mkfile module files */
+// Channel
+// 	.fromPath("${workflow.projectDir}/mkmodules/mk-run-f3statistics/*")
+// 	.toList()
+// 	.set{ mkfiles_002 }
+//
+// process _002_run_f3statistics {
+//
+// 	publishDir "${params.output_dir}/${pipeline_name}-results/_002_run_f3statistics/",mode:"copy"
+//
+// 	input:
+//   file input_treemix from results_01_run_treemix
+//   file mk_files from mkfiles_002
+//
+// 	output:
+// 	file "*.f3statistics" into results_002_run_f3statistics
+//
+// 	"""
+// 	export K_VALUE="${params.k_value}"
+// 	bash runmk.sh
+// 	"""
+//
+// }
+//
+// /* 	Process _003_run_f4statistics */
+// /* Read mkfile module files */
+// Channel
+// 	.fromPath("${workflow.projectDir}/mkmodules/mk-run-f4statistics/*")
+// 	.toList()
+// 	.set{ mkfiles_003 }
+//
+// process _003_run_f4statistics {
+//
+// 	publishDir "${params.output_dir}/${pipeline_name}-results/_003_run_f4statistics/",mode:"copy"
+//
+// 	input:
+//   file input_treemix from results_01_run_treemix
+//   file mk_files from mkfiles_003
+//
+// 	output:
+// 	file "*.f4statistics" into results_003_run_f4statistics
+//
+// 	"""
+// 	export K_VALUE="${params.k_value}"
+// 	bash runmk.sh
+// 	"""
+//
+// }
+//
 /* 	Process _post1_plot_treemix */
+
+/* Read pop order file */
+Channel
+	.fromPath("${params.pop_order}*")
+	.toList()
+	.set{ pop_order }
+
 /* Read mkfile module files */
 Channel
 	.fromPath("${workflow.projectDir}/mkmodules/mk-plot-treemix/*")
@@ -508,62 +522,63 @@ process _post1_plot_treemix {
 
 	input:
   file treemix from results_001_run_treemix
+	file reference from pop_order
   file mk_files from mkfiles_post1
 
 	output:
 	file "*"
 
 	"""
-	export POP_ORDER="${params.pop_order}"
+	export POP_ORDER="$reference"
 	bash runmk.sh
 	"""
 
 }
-
-/* 	Process _post2_plot_f3statistics */
-/* Read mkfile module files */
-Channel
-	.fromPath("${workflow.projectDir}/mkmodules/mk-plot-f3-statistics/*")
-	.toList()
-	.set{ mkfiles_post2 }
-
-process _post2_plot_f3statistics {
-
-	publishDir "${params.output_dir}/${pipeline_name}-results/_post2_plot_f3statistics/",mode:"copy"
-
-	input:
-  file f3 from results_002_run_f3statistics
-  file mk_files from mkfiles_post2
-
-	output:
-	file "*"
-
-	"""
-	bash runmk.sh
-	"""
-
-}
-
-/* 	Process _post3_plot_f4statistics */
-/* Read mkfile module files */
-Channel
-	.fromPath("${workflow.projectDir}/mkmodules/mk-plot-f4-statistics/*")
-	.toList()
-	.set{ mkfiles_post3 }
-
-process _post3_plot_f4statistics {
-
-	publishDir "${params.output_dir}/${pipeline_name}-results/_post3_plot_f4statistics/",mode:"copy"
-
-	input:
-  file f4 from results_003_run_f4statistics
-  file mk_files from mkfiles_post3
-
-	output:
-	file "*"
-
-	"""
-	bash runmk.sh
-	"""
-
-}
+//
+// /* 	Process _post2_plot_f3statistics */
+// /* Read mkfile module files */
+// Channel
+// 	.fromPath("${workflow.projectDir}/mkmodules/mk-plot-f3-statistics/*")
+// 	.toList()
+// 	.set{ mkfiles_post2 }
+//
+// process _post2_plot_f3statistics {
+//
+// 	publishDir "${params.output_dir}/${pipeline_name}-results/_post2_plot_f3statistics/",mode:"copy"
+//
+// 	input:
+//   file f3 from results_002_run_f3statistics
+//   file mk_files from mkfiles_post2
+//
+// 	output:
+// 	file "*"
+//
+// 	"""
+// 	bash runmk.sh
+// 	"""
+//
+// }
+//
+// /* 	Process _post3_plot_f4statistics */
+// /* Read mkfile module files */
+// Channel
+// 	.fromPath("${workflow.projectDir}/mkmodules/mk-plot-f4-statistics/*")
+// 	.toList()
+// 	.set{ mkfiles_post3 }
+//
+// process _post3_plot_f4statistics {
+//
+// 	publishDir "${params.output_dir}/${pipeline_name}-results/_post3_plot_f4statistics/",mode:"copy"
+//
+// 	input:
+//   file f4 from results_003_run_f4statistics
+//   file mk_files from mkfiles_post3
+//
+// 	output:
+// 	file "*"
+//
+// 	"""
+// 	bash runmk.sh
+// 	"""
+//
+// }
