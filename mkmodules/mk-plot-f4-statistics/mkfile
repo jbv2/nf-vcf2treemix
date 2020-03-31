@@ -1,0 +1,17 @@
+MKSHELL=/bin/bash
+
+## make the plot
+%.f4raw_plot.svg:Q: %.f4.tsv
+	echo "[DEBUG] Plotting $stem "
+	Rscript --vanilla plotter.R $prereq $target
+
+
+%.f4.tsv:Q: %.f4statistics
+	echo "[DEBUG] Making tsv of f4statistics results"
+	echo "Tested_Tree f4_statistic Standard_error Z_score" \
+		| tr ' ' '\t' > $target
+	cat $prereq \
+		| grep -v "npop" \
+		| grep -v "^Estimating" \
+		| grep -v "^total" \
+		| tr ' ' '\t' >> $target
