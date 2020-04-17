@@ -256,6 +256,12 @@ process _pre1_split_chromosomes {
 }
 
 /* _pre2_formatvcf */
+/* Read sample list */
+Channel
+	.fromPath("${params.sample_list}*")
+	.toList()
+	.set{ sample_list }
+
 /* Read mkfile module files */
 Channel
 	.fromPath("${workflow.projectDir}/mkmodules/mk-format-and-select-samples/*")
@@ -268,6 +274,7 @@ process _pre2_formatvcf {
 
 	input:
 	file vcf from results_pre1_split_chromosomes
+	file reference from sample_list
 	file mk_files from mkfiles_pre2
 
 	output:
@@ -275,7 +282,7 @@ process _pre2_formatvcf {
 
 
 	"""
-	export SAMPLE_LIST="${params.sample_list}"
+	export SAMPLE_LIST="$reference"
 	bash runmk.sh
 	"""
 
@@ -401,13 +408,14 @@ process _pre7_make_clust {
 
 	input:
 	file bfile from results_pre6_vcf2plink
+	file reference from sample_list
 	file mk_files from mkfiles_pre7
 
 	output:
 	file "*.clust" into results_pre7_make_clust
 
 	"""
-	export SAMPLE_LIST="${params.sample_list}"
+	export SAMPLE_LIST="$reference"
 	bash runmk.sh
 	"""
 
@@ -438,7 +446,6 @@ process _001_run_treemix {
 	export ROOT_POP="${params.root_pop}"
 	export BOOTSTRAP_VALUE="${params.bootstrap_value}"
 	export PLINK1="${params.plink1}"
-	export POP_ORDER="${params.pop_order}"
 	export MIGRATION_EVENT="${params.migration_event}"
 	bash runmk.sh
 	"""
@@ -496,6 +503,13 @@ process _003_run_f4statistics {
 }
 
 /* 	Process _post1_plot_treemix */
+
+/* Read pop order file */
+Channel
+	.fromPath("${params.pop_order}*")
+	.toList()
+	.set{ pop_order }
+
 /* Read mkfile module files */
 Channel
 	.fromPath("${workflow.projectDir}/mkmodules/mk-plot-treemix/*")
@@ -508,13 +522,14 @@ process _post1_plot_treemix {
 
 	input:
   file treemix from results_001_run_treemix
+	file reference from pop_order
   file mk_files from mkfiles_post1
 
 	output:
 	file "*"
 
 	"""
-	export POP_ORDER="${params.pop_order}"
+	export POP_ORDER="$reference"
 	bash runmk.sh
 	"""
 
