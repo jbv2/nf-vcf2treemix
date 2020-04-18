@@ -14,8 +14,8 @@ MKSHELL=/bin/bash
 		-bootstrap $BOOTSTRAP_VALUE \
 		-m $MIGRATION_EVENT \
 		-noss \
-	&& treemix -i $prereq -m $migration_event_1 -g $target.vertices.gz $target.edges.gz -o $target"_M1" \
-	&& treemix -i $prereq -m $migration_event_2 -g $target.vertices.gz $target.edges.gz -o $target"_M2"
+	&& treemix -i $prereq -o $target"_M1" -m $migration_event_1 -root $ROOT_POP -g $target.vertices.gz $target.edges.gz -bootstrap $BOOTSTRAP_VALUE -noss -seed $SEED_TREEMIX \
+	&& treemix -i $prereq -o $target"_M2" -m $migration_event_2 -root $ROOT_POP -g $target.vertices.gz $target.edges.gz -bootstrap $BOOTSTRAP_VALUE -noss -seed $SEED_TREEMIX
 
 %.treemix.frq.gz:Q: %.frq.strat.gz
 	echo "[DEBUG] Converting plink files to treemix input"
