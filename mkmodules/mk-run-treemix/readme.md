@@ -3,7 +3,7 @@
 
 * Judith Ballesteros Villascán (judith.vballesteros@gmail.com)
 
-**Date:** March 2020 
+**Date:** March 2020
 
 ---
 
@@ -11,6 +11,8 @@
 Prepares treemix input by using plink2treemix.py and runs it.
 
 * plink2treemix.py is a tool that takes bfile of plink and set it to TreeMix input.
+
+TO DO jballesteros: run TreeMix with N migration events
 
 ## Module Dependencies:
 TreeMix >
@@ -41,7 +43,7 @@ GROUP1 sample2        0       0       0       -9
 GROUP1 sample3        0       0       0       -9
 ...
 ```
-* A `.clust` file separated by tabs. 
+* A `.clust` file separated by tabs.
 
 Example line(s):
 
@@ -61,9 +63,9 @@ GROUP1        Sample3        Subgroup3
 Example line(s):
 
 ```
-Subgroup1 Subgroup2 Subgroup3 Subgroup4 Subgroup5 
-2,64 45,113 36,124 0,152 53,153 
-1,65 52,106 43,117 0,152 80,126 
+Subgroup1 Subgroup2 Subgroup3 Subgroup4 Subgroup5
+2,64 45,113 36,124 0,152 53,153
+1,65 52,106 43,117 0,152 80,126
 0,66 9,149 1,159 0,152 33,173
 ...
 ```
