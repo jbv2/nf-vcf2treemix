@@ -1,6 +1,7 @@
 ## load libraries
 library("dplyr")
 library("ggplot2")
+library(tibble)
 
 ## Read args from command line
 args = commandArgs(trailingOnly=TRUE)
@@ -16,16 +17,28 @@ f3_tsv <- read.table(file = args[1], header = T, sep = "\t", stringsAsFactors = 
 output_file <- args[2]
 output_file2 <- gsub(pattern = ".f3raw_plot.svg", replacement = ".f3significant_plot.svg", x = output_file)
 
+abs_y <- abs(x = f3_tsv$Z_score)
+abs_x <- abs(x = f3_tsv$f3_statistic)
+
 #Making plot
 #f3_significant.p <-
 f3_raw.p <- ggplot(f3_tsv, aes(f3_statistic, Z_score, colour = Tested_Tree)) +
+  ylim(-max(abs_y), max(abs_y)) +
+  xlim(-max(abs_x), max(abs_x)) +
+  geom_hline(yintercept = 0,colour="black", linetype="solid") +
+  geom_vline(xintercept = 0,colour="black", linetype="solid") +
+  geom_hline(yintercept = -3,colour="#990000", linetype="dashed") +
   geom_point() +
   geom_errorbarh(aes(xmax = f3_statistic + Standard_error, xmin = f3_statistic - Standard_error)) +
+  geom_label(data = f3_tsv %>% filter(f3_statistic < 0 & Z_score < -3), # Filter data first
+      aes(label=Tested_Tree)) +
   ylab("Z score") +
   xlab("f3 values") +
   ggtitle(label = "Raw results of f3 statistics") +
-  theme_bw() +
-  theme(plot.title = element_text(hjust = 0.5, size = 15))
+  theme(plot.title = element_text(hjust = 0.5, size = 15),
+        panel.background = element_blank(),
+        panel.border = element_rect(linetype = "solid", fill = NA),
+        legend.position="none")
 
 ## save plot
 ggsave(filename = output_file,
@@ -40,15 +53,18 @@ f3_significant <- f3_tsv %>%
   filter(Z_score < -3)
 
 #Making plot
-f3_significant.p <- ggplot(f3_significant, aes(f3_statistic, Z_score, colour = Tested_Tree)) +
+f3_significant.p <-ggplot(f3_significant, aes(f3_statistic, Z_score, colour = Tested_Tree)) +
+  geom_hline(yintercept = 0,colour="black", linetype="solid") +
+  geom_vline(xintercept = 0,colour="black", linetype="solid") +
+  geom_hline(yintercept = -3,colour="#990000", linetype="dashed") +
   geom_point() +
   geom_errorbarh(aes(xmax = f3_statistic + Standard_error, xmin = f3_statistic - Standard_error)) +
   ylim(-15,-2) +
   xlim(-5,0.5) +
-  geom_hline(yintercept = -3,colour="#990000", linetype="dashed") +
-  geom_vline(xintercept = 0, colour="#990000", linetype="dashed") +
   ylab("Z score") +
   xlab("f3 values") +
+  geom_label(data = f3_tsv %>% filter(f3_statistic < 0 & Z_score < -3), # Filter data first
+             aes(label=Tested_Tree)) +
   ggtitle(label = "Significant results of f3 statistics") +
   theme_bw() +
   theme(plot.title = element_text(hjust = 0.5, size = 15))

@@ -438,7 +438,7 @@ process _001_run_treemix {
   file mk_files from mkfiles_001
 
 	output:
-	file "*.TreeMix.*" into results_001_run_treemix
+	file "*.TreeMix*" into results_001_run_treemix
 	file "*.treemix.*" into results_01_run_treemix
 
 	"""
@@ -447,6 +447,7 @@ process _001_run_treemix {
 	export BOOTSTRAP_VALUE="${params.bootstrap_value}"
 	export PLINK1="${params.plink1}"
 	export MIGRATION_EVENT="${params.migration_event}"
+	export SEED_TREEMIX="${params.seed_treemix}"
 	bash runmk.sh
 	"""
 
