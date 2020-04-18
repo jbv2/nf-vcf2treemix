@@ -8,6 +8,7 @@ export ROOT_POP="YRI"
 export BOOTSTRAP_VALUE="100"
 export PLINK1="plink"
 export MIGRATION_EVENT="0"
+export SEED_TREEMIX="666"
 ###
 
 echo "[>..] test running this module with data in test/data"

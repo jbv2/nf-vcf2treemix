@@ -2,15 +2,20 @@
 MKSHELL=/bin/bash
 
 %.TreeMix:VQ: %.treemix.frq.gz
+	migration_event_1=$(($MIGRATION_EVENT + 1))
+	migration_event_2=$(($MIGRATION_EVENT + 2))
 	echo "[DEBUG] Running treemix"
-	treemix -i $prereq \
+	treemix -seed $SEED_TREEMIX \
+		-i $prereq \
 		-o $target \
 		-k $K_VALUE \
 		-global \
 		-root $ROOT_POP \
 		-bootstrap $BOOTSTRAP_VALUE \
 		-m $MIGRATION_EVENT \
-		-noss
+		-noss \
+	&& treemix -i $prereq -m $migration_event_1 -g $target.vertices.gz $target.edges.gz -o $target"_M1" \
+	&& treemix -i $prereq -m $migration_event_2 -g $target.vertices.gz $target.edges.gz -o $target"_M2"
 
 %.treemix.frq.gz:Q: %.frq.strat.gz
 	echo "[DEBUG] Converting plink files to treemix input"
