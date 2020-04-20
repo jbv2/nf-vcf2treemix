@@ -8,8 +8,8 @@ args = commandArgs(trailingOnly=TRUE)
 
 ## Uncomment For debugging only
 ## Comment for production mode only
- # args[1] <- "test/data/76g_1000GP-population_set.formatted.filtered.LD.maf_filtered.f3.tsv" ## %.tsv file
- # args[2] <- "test/data/76g_1000GP-population_set.formatted.filtered.LD.maf_filtered.f3raw_plot.svg" ## raw svg file
+ args[1] <- "test/data/76g_1000GP-population_set.formatted.filtered.LD.maf_filtered.f3.tsv" ## %.tsv file
+ args[2] <- "test/data/76g_1000GP-population_set.formatted.filtered.LD.maf_filtered.f3raw_plot.svg" ## raw svg file
  
 
 ## place args into named object
@@ -27,10 +27,10 @@ f3_raw.p <- ggplot(f3_tsv, aes(f3_statistic, Z_score, colour = Tested_Tree)) +
   xlim(-max(abs_x), max(abs_x)) +
   geom_hline(yintercept = 0,colour="black", linetype="solid") +
   geom_vline(xintercept = 0,colour="black", linetype="solid") +
-  geom_hline(yintercept = -3,colour="#990000", linetype="dashed") +
+  geom_hline(yintercept = -2,colour="#990000", linetype="dashed") +
   geom_point() +
   geom_errorbarh(aes(xmax = f3_statistic + Standard_error, xmin = f3_statistic - Standard_error)) +
-  geom_label(data = f3_tsv %>% filter(f3_statistic < 0 & Z_score < -3), # Filter data first
+  geom_label(data = f3_tsv %>% filter(f3_statistic < 0 & Z_score < -2), # Filter data first
       aes(label=Tested_Tree)) +
   ylab("Z score") +
   xlab("f3 values") +
@@ -47,23 +47,23 @@ ggsave(filename = output_file,
        width = 10, height = 7 , units = "in",
        dpi = 300)
 
-## Filter data  by Zscore < -3
+## Filter data  by Zscore < -2
 f3_significant <- f3_tsv %>%
   filter(f3_statistic < 0) %>%
-  filter(Z_score < -3)
+  filter(Z_score < -2)
 
 #Making plot
 f3_significant.p <-ggplot(f3_significant, aes(f3_statistic, Z_score, colour = Tested_Tree)) +
   geom_hline(yintercept = 0,colour="black", linetype="solid") +
   geom_vline(xintercept = 0,colour="black", linetype="solid") +
-  geom_hline(yintercept = -3,colour="#990000", linetype="dashed") +
+  geom_hline(yintercept = -2,colour="#990000", linetype="dashed") +
   geom_point() +
   geom_errorbarh(aes(xmax = f3_statistic + Standard_error, xmin = f3_statistic - Standard_error)) +
   ylim(-15,-2) +
   xlim(-5,0.5) +
   ylab("Z score") +
   xlab("f3 values") +
-  geom_label(data = f3_tsv %>% filter(f3_statistic < 0 & Z_score < -3), # Filter data first
+  geom_label(data = f3_tsv %>% filter(f3_statistic < 0 & Z_score < -2), # Filter data first
              aes(label=Tested_Tree)) +
   ggtitle(label = "Significant results of f3 statistics") +
   theme_bw() +
