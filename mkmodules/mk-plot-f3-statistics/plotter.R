@@ -8,9 +8,9 @@ args = commandArgs(trailingOnly=TRUE)
 
 ## Uncomment For debugging only
 ## Comment for production mode only
- args[1] <- "test/data/76g_1000GP-population_set.formatted.filtered.LD.maf_filtered.f3.tsv" ## %.tsv file
- args[2] <- "test/data/76g_1000GP-population_set.formatted.filtered.LD.maf_filtered.f3raw_plot.svg" ## raw svg file
- 
+# args[1] <- "test/data/20kvariantsfromchr1and22_76g_1000GP-population_set.formatted.filtered.LD.maf_filtered.f3.tsv" ## %.tsv file
+# args[2] <- "test/data/20kvariantsfromchr1and22_76g_1000GP-population_set.formatted.filtered.LD.maf_filtered.f3raw_plot.svg" ## raw svg file
+
 
 ## place args into named object
 f3_tsv <- read.table(file = args[1], header = T, sep = "\t", stringsAsFactors = F)
@@ -21,7 +21,7 @@ abs_y <- abs(x = f3_tsv$Z_score)
 abs_x <- abs(x = f3_tsv$f3_statistic)
 
 #Making plot
-#f3 general overview 
+#f3_significant.p <-
 f3_raw.p <- ggplot(f3_tsv, aes(f3_statistic, Z_score, colour = Tested_Tree)) +
   ylim(-max(abs_y), max(abs_y)) +
   xlim(-max(abs_x), max(abs_x)) +
@@ -38,7 +38,7 @@ f3_raw.p <- ggplot(f3_tsv, aes(f3_statistic, Z_score, colour = Tested_Tree)) +
   theme(plot.title = element_text(hjust = 0.5, size = 15),
         panel.background = element_blank(),
         panel.border = element_rect(linetype = "solid", fill = NA),
-        legend.position="none") 
+        legend.position="none")
 
 ## save plot
 ggsave(filename = output_file,
@@ -67,14 +67,12 @@ f3_significant.p <-ggplot(f3_significant, aes(f3_statistic, Z_score, colour = Te
              aes(label=Tested_Tree)) +
   ggtitle(label = "Significant results of f3 statistics") +
   theme_bw() +
-  theme(plot.title = element_text(hjust = 0.5, size = 15)) 
-  
+  theme(plot.title = element_text(hjust = 0.5, size = 15))
+
 
 ## save plot
 ggsave(filename = output_file2,
        plot = f3_significant.p,
        device = "svg",
-       width = 10, height = 7 , units = "in",
+       width = 30, height = 21 , units = "in",
        dpi = 300)
-
-
