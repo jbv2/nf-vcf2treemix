@@ -7,12 +7,14 @@ MKSHELL=/bin/bash
 	--threads $THREADS_PLINK \
 	--maf $MAF \
 	--make-bed \
+	--allow-extra-chr \
 	--out $stem.LD.maf_filtered
 
 %.converted.bed:Q: %.LD.vcf
 	echo "[DEBUG] Converting vcf to plink file"
 	$PLINK --vcf $prereq \
 	--threads $THREADS_PLINK \
+	--allow-extra-chr \
 	--keep-allele-order \
 	--double-id \
 	--vcf-filter \
